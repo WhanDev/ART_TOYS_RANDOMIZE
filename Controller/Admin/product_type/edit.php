@@ -3,15 +3,15 @@
 ?>
 
 <?php
-    if (!isset($_SESSION['email'])) {
-        echo json_encode(array("result" => 0, "messages" => "กรุณาเข้าสู่ระบบ"));
-        exit;
-    }
+    // if (!isset($_SESSION['email'])) {
+    //     echo json_encode(array("result" => 0, "messages" => "กรุณาเข้าสู่ระบบ"));
+    //     exit;
+    // }
     
-    if ($_SERVER["REQUEST_METHOD"] == "POST") { 
+    if ($_SERVER["REQUEST_METHOD"] == "PUT") { 
         $content = @file_get_contents("php://input");
         $json_data = @json_decode($content, true);
-        $type_id = isset($json_data["type_id"]) ? trim($json_data["type_id"]) : "";
+        $type_id = trim($_GET['type_id']);
         $type_name = isset($json_data["type_name"]) ? trim($json_data["type_name"]) : "";
     } else { 
         echo json_encode(array("result" => 0, "messages" => "ISN'T POST METHOD"));
@@ -25,11 +25,11 @@
         exit;
     }
 
-    $role = $_SESSION['user_role'];
-    if ($role != "admin") {
-        echo json_encode(array("result" => 0, "messages" => "แกไม่มีสิทธิ์"));
-        exit;
-    }
+    // $role = $_SESSION['user_role'];
+    // if ($role != "admin") {
+    //     echo json_encode(array("result" => 0, "messages" => "แกไม่มีสิทธิ์"));
+    //     exit;
+    // }
 
     $strSQL = "SELECT * FROM product_type WHERE type_name ='" . @$type_name . "' ";
     $query = @mysqli_query($conn, $strSQL);
