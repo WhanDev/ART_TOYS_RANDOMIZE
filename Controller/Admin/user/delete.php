@@ -1,5 +1,5 @@
 <?php
-    include("../../CONFIG/Config.php");
+    include("../../../CONFIG/Config.php");
     session_start();
 ?>
 

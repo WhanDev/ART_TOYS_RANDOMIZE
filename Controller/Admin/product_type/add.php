@@ -1,5 +1,5 @@
 <?php
-    include("../../CONFIG/Config.php");
+    include("../../../CONFIG/Config.php");
 ?>
 
 <?php
@@ -19,11 +19,11 @@
         exit;
     }
 
-    $role = $_SESSION['user_role'];
-    if ($role != "admin") {
-        echo json_encode(array("result" => 0, "messages" => "แกไม่มีสิทธิ์"));
-        exit;
-    }
+    // $role = $_SESSION['user_role'];
+    // if ($role != "admin") {
+    //     echo json_encode(array("result" => 0, "messages" => "แกไม่มีสิทธิ์"));
+    //     exit;
+    // }
 
     $strSQL = "SELECT * FROM product_type WHERE type_name ='" . @$type_name . "' ";
     $query = @mysqli_query($conn, $strSQL);
