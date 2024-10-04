@@ -4,10 +4,16 @@
 ?>
 
 <?php
-    if ($_SERVER["REQUEST_METHOD"] == "POST") { 
+    if ($_SERVER["REQUEST_METHOD"] == "PATCH") { 
         $content = @file_get_contents("php://input");
         $json_data = @json_decode($content, true);
-        $prod_id = isset($json_data["prod_id"]) ? trim($json_data["prod_id"]) : '';
+        
+        if (!isset($_GET['prod_id']) || empty(trim($_GET['prod_id']))) {
+            echo json_encode(array("result" => 0, "messages" => "ไม่พบ prod_id"));
+            exit;
+        }
+
+        $prod_id = trim($_GET['prod_id']);
         $prod_name = isset($json_data["prod_name"]) ? trim($json_data["prod_name"]) : '';
         $prod_size = isset($json_data["prod_size"]) ? trim($json_data["prod_size"]) : '';
         $prod_amount = isset($json_data["prod_amount"]) ? trim($json_data["prod_amount"]) : '';
@@ -21,10 +27,6 @@
 ?>
 
 <?php
-    if (empty($prod_name) || empty($prod_size) || empty($prod_amount) || empty($prod_price) || empty($prod_img) || empty($type_id)) {
-        echo json_encode(array("result" => 0, "messages" => "ข้อมูลไม่ครบถ้วน"));
-        exit;
-    }
 
     $strSQL = "SELECT * FROM product WHERE prod_id = '" . @$prod_id . "'";
     $query = @mysqli_query($conn, $strSQL);
@@ -33,19 +35,25 @@
         echo json_encode(array("result" => 0, "messages" => "ไม่พบสินค้า"));
         exit;
     }else{
-        $chk = "SELECT * FROM product WHERE prod_name = '" . @$prod_name . "'";
-        $result1 = @mysqli_query($conn, $chk);
 
-        if (@mysqli_num_rows($result1) > 0) {
-            echo json_encode(array("result" => 0, "messages" => "มีสินค้าชื่อนี้แล้ว"));
+        $stmt = $conn->prepare("SELECT prod_name FROM product WHERE prod_name = ? AND prod_id != ?");
+        $stmt->bind_param("si", $prod_name, $prod_id);
+        $stmt->execute();
+        $resultObj = $stmt->get_result();
+        $row = $resultObj->fetch_assoc();
+        if ($resultObj->num_rows > 0) {
+            echo json_encode(array("result" => 0, "messages" => "ชื่อสินค้าซ้ำ", "dataList" => $row));
             exit;
-        }else{
-            $sql = "UPDATE product SET prod_name = '" . @$prod_name . "', prod_size = '" . @$prod_size . "', prod_amount = '" . @$prod_amount . "', prod_price = '" . @$prod_price . "', prod_img = '" . @$prod_img . "', type_id = '" . @$type_id . "' WHERE prod_id = '" . @$prod_id . "'";
-            @mysqli_query($conn, $sql);
-            echo json_encode(array("result" => 1, "message" => "Success"));
+        } else {
+            $stmt = $conn->prepare("UPDATE product SET prod_name = ?, prod_size = ?, prod_amount = ?, prod_price = ?, prod_img = ?, type_id = ? WHERE prod_id = $prod_id");
+            $stmt->bind_param("siidsi", $prod_name, $prod_size, $prod_amount, $prod_price, $prod_img, $type_id);
+            if ($stmt->execute()) {
+                echo json_encode(array("result" => 1, "messages" => "แก้ไขข้อมูลส่วนตัวสำเร็จ"));
+            } else {
+                echo json_encode(array("result" => 0, "messages" => "ไม่สามารถแก้ไขข้อมูลได้"));
+            }
+            $stmt->close(); 
             mysqli_close($conn);
         }
     }
-
-    
 ?>

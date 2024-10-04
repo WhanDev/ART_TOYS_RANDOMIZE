@@ -8,9 +8,15 @@
     //     exit;
     // }
     
-    if ($_SERVER["REQUEST_METHOD"] == "PUT") { 
+    if ($_SERVER["REQUEST_METHOD"] == "PATCH") { 
         $content = @file_get_contents("php://input");
         $json_data = @json_decode($content, true);
+
+        if (!isset($_GET['type_id']) || empty(trim($_GET['type_id']))) {
+            echo json_encode(array("result" => 0, "messages" => "ไม่พบ type_id"));
+            exit;
+        }
+        
         $type_id = trim($_GET['type_id']);
         $type_name = isset($json_data["type_name"]) ? trim($json_data["type_name"]) : "";
     } else { 
@@ -38,8 +44,15 @@
         echo json_encode(array("result" => 0, "messages" => "ประเภทสินค้านี้มีอยู่แล้ว"));
         exit;
     }
-    $strSQL = "UPDATE product_type SET type_name = '" . @$type_name . "' WHERE type_id = '" . @$type_id . "' ";
-    $query2 = @mysqli_query($conn, $strSQL);
-    echo json_encode(array("result" => 1, "messages" => "แก้ไขประเภทสินค้าสําเร็จ"));
+        $stmt = $conn->prepare("UPDATE product_type SET type_name = ? WHERE type_id = $type_id");
+        $stmt->bind_param("s", $type_name);
+        $stmt->execute();
+        if ($stmt->execute()) {
+            echo json_encode(array("result" => 1, "messages" => "แก้ไขประเภทสินค้าสำเร็จ"));
+        } else {
+            echo json_encode(array("result" => 0, "messages" => "ไม่สามารถแก้ไขประเภทสินค้าได้"));
+        }
+        $stmt->close();
+        mysqli_close($conn);
    
 ?>

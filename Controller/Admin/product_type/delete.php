@@ -18,12 +18,13 @@
     //     exit;
     // }
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {   
-        $type_id = isset($json_data["type_id"]) ? trim($json_data["type_id"]) : '';
-        if (empty($type_id)) {
-            echo json_encode(array("result" => 0, "messages" => "กรุณากรอกข้อมูลให้ครบถ้วน"));
+    if ($_SERVER["REQUEST_METHOD"] == "DELETE") {   
+
+        if (!isset($_GET['type_id']) || empty(trim($_GET['type_id']))) {
+            echo json_encode(array("result" => 0, "messages" => "ไม่พบ type_id"));
             exit;
         }
+        $type_id = trim($_GET['type_id']);
         $sql = "SELECT * FROM product_type WHERE type_id = '" . @$type_id . "' ";
         $result = @mysqli_query($conn, $sql);
         $row = @mysqli_fetch_array($result);

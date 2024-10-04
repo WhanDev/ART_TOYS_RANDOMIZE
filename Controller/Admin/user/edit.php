@@ -9,7 +9,7 @@
     //     exit;
     // }
 
-    if ($_SERVER["REQUEST_METHOD"] == "PUT") {
+    if ($_SERVER["REQUEST_METHOD"] == "PATCH") {
         $content = @file_get_contents("php://input");
         $json_data = @json_decode($content, true);
 
@@ -24,11 +24,6 @@
         $tel = isset($json_data["tel"]) ? trim($json_data["tel"]) : '';
         $address = isset($json_data["address"]) ? trim($json_data["address"]) : '';
         $user_role = isset($json_data["user_role"]) ? trim($json_data["user_role"]) : '';
-
-        if (empty($f_name) || empty($l_name) || empty($tel) || empty($address) || empty($user_role)) {
-            echo json_encode(array("result" => 0, "messages" => "ข้อมูลไม่ครบถ้วน"));
-            exit;
-        }
 
         // $role = $_SESSION['user_role'];
         // if ($role != "admin") {
