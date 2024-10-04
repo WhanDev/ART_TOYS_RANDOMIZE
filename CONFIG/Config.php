@@ -9,7 +9,7 @@ $serName = "localhost";
 $userNameDB = "root";
 $userPasswordDB = "";
 $dbName = "db_art_toy";
-$port = "3307"
+$port = "3306"
 ?>
 <?php
 @date_default_timezone_set("Asia/Bangkok");
