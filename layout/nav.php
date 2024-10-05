@@ -10,15 +10,13 @@ if (!defined('BASE_DIR')) {
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    
-
     <div class="collapse navbar-collapse" id="navbarNav">
     <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
         <div class="d-md-none">
             <?php include BASE_DIR . '/layout/sidebar.php'; ?>
         </div>
     <?php endif; ?>
-    
+
         <ul class="navbar-nav me-auto">
             <?php if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] === 'customer'): ?>
                 <li class="nav-item">

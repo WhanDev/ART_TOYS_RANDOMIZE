@@ -4,7 +4,7 @@
 
 <?php
     if ($_SERVER["REQUEST_METHOD"] == "GET") {   
-        $stmt = $conn->prepare("SELECT * FROM product");
+        $stmt = $conn->prepare("SELECT *,product_type.type_name FROM product JOIN product_type ON product.type_id = product_type.type_id");
         $stmt->execute();
         $resultObj = $stmt->get_result();
         if ($resultObj->num_rows == 0) {

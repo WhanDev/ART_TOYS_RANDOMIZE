@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     $target_dir = "../../../Controller/admin/product/uploads/";
-    $target_file = $target_dir . basename($_FILES["prod_img"]["name"]);
+    $target_file = basename($_FILES["prod_img"]["name"]);
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 

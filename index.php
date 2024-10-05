@@ -2,7 +2,7 @@
 session_start();
 
 // Set BASE_DIR to the absolute path of the root directory
-define('BASE_DIR', __DIR__ . '/'); 
+define('BASE_DIR', __DIR__ . '/');
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -33,11 +33,13 @@ define('BASE_DIR', __DIR__ . '/');
             <?php endif; ?>
 
             <!-- Main Content Area -->
-            <main class="col-md-<?php echo isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin' ? '9' : '12'; ?> ms-sm-auto col-lg-<?php echo isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin' ? '10' : '12'; ?> px-md-4">
+            <main class="col-md-<?php echo (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') ? '9' : '12'; ?> ms-sm-auto col-lg-<?php echo (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') ? '10' : '12'; ?> px-md-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">
-                        <?php echo isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin' ? 'Welcome Admin' : 'Welcome Customer'; ?>
-                    </h1>
+                    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                        <?php include BASE_DIR . 'admin/dashboard.php'; ?>
+                    <?php else: ?>
+                        <?php include BASE_DIR . 'shop.php'; ?>
+                    <?php endif; ?>
                 </div>
                 <!-- Dynamic Content goes here -->
             </main>

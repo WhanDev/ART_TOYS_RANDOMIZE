@@ -48,13 +48,12 @@ define('BASE_DIR', __DIR__ . '/');
                 <!-- Profile Information -->
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">ข้อมูลผู้ใช้</h5>
                         <p class="card-text">ชื่อ: <?php echo $_SESSION['f_name'] ?? 'ไม่มีข้อมูล'; ?>
-                            <?php echo $_SESSION['l_name'] ?? ''; ?></p>
+                            <?php echo $_SESSION['l_name'] ?? 'ไม่มีข้อมูล'; ?></p>
                         <p class="card-text">อีเมล์: <?php echo $_SESSION['email']; ?></p>
                         <p class="card-text">เบอร์โทร: <?php echo $_SESSION['tel'] ?? 'ไม่มีข้อมูล'; ?></p>
                         <p class="card-text">ที่อยู่: <?php echo $_SESSION['address'] ?? 'ไม่มีข้อมูล'; ?></p>
-                        <p class="card-text">บทบาท: <?php echo $_SESSION['user_role'] ?? 'ผู้ใช้'; ?></p>
+                        <p class="card-text">สิทธิ: <?php echo $_SESSION['user_role'] ?? 'ไม่มีข้อมูล'; ?></p>
                     </div>
                 </div>
             </div>
