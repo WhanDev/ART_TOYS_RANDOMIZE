@@ -1,51 +1,51 @@
+<?php
+if (!defined('BASE_DIR')) {
+    define('BASE_DIR', 'http://localhost/ART_TOYS_RANDOMIZE/'); 
+}
+?>
 <div class="container-fluid">
     <a class="navbar-brand" href="index.php">ART TOYS</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
-            <div class="d-md-none">
-                <?php include './layout/sidebar.php'; ?>
-            </div>
-        <?php endif; ?>
 
+    
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+        <div class="d-md-none">
+            <?php include BASE_DIR . '/layout/sidebar.php'; ?>
+        </div>
+    <?php endif; ?>
+    
         <ul class="navbar-nav me-auto">
-            <?php if (!isset($_SESSION['user_role']) or $_SESSION['user_role'] === 'customer'): ?>
+            <?php if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] === 'customer'): ?>
                 <li class="nav-item">
                     <a class="nav-link" href="index.php">สินค้า</a>
                 </li>
             <?php endif; ?>
         </ul>
-        
+
         <ul class="navbar-nav ms-auto">
             <?php if (!isset($_SESSION['email'])) { ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="register.php" onClick="register()">สมัครสมาชิก</a>
+                    <a class="nav-link" href="register.php">สมัครสมาชิก</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="login.php" onClick="login()">เข้าสู่ระบบ</a>
+                    <a class="nav-link" href="login.php">เข้าสู่ระบบ</a>
                 </li>
             <?php } else { ?>
-                <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+
+                <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'customer'): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="profile.php">ข้อมูลส่วนตัว</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" onClick="logout()">
-                            <i class="bi bi-box-arrow-right"></i> ออกจากระบบ
-                        </a>
-                    </li>
-                <?php else: ?>
                     <li class="nav-item">
                         <a class="nav-link" href="order.php">คำสั่งซื้อ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="profile.php">ข้อมูลส่วนตัว</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" onClick="logout()">
+                        <a class="nav-link" href="javascript:void(0);" onClick="logout()">
                             <i class="bi bi-box-arrow-right"></i> ออกจากระบบ
                         </a>
                     </li>
@@ -56,16 +56,11 @@
     </div>
 </div>
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
 <script>
-    function register() {
-        window.location.href = 'register.php';
-    }
-
-    function login() {
-        window.location.href = 'login.php';
-    }
-
     function logout() {
         Swal.fire({
             title: 'ยืนยันการออกจากระบบ?',
@@ -86,7 +81,8 @@
                                 icon: 'success',
                                 confirmButtonText: 'ตกลง'
                             }).then(() => {
-                                window.location.href = 'index.php';
+                                // เปลี่ยนไปยังหน้า index.php
+                                window.location.href = 'http://localhost/ART_TOYS_RANDOMIZE/index.php';
                             });
                         } else {
                             Swal.fire({

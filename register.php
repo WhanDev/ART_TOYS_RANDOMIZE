@@ -4,6 +4,9 @@ if (isset($_SESSION['email'])) {
     header("Location: index.php");
     exit();
 }
+
+// Set BASE_DIR to the absolute path of the root directory
+define('BASE_DIR', __DIR__ . '/'); 
 ?>
 
 <!DOCTYPE html>
@@ -13,24 +16,26 @@ if (isset($_SESSION['email'])) {
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>ลงทะเบียน - ART TOYS</title>
+    <title>สมัครสมาชิก - ART TOYS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" />
-    <script data-search-pseudo-elements defer
-        src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.24.1/feather.min.js" crossorigin="anonymous">
-    </script>
+    <script data-search-pseudo-elements defer src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.24.1/feather.min.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <?php include BASE_DIR . 'layout/nav.php'; ?> <!-- Using BASE_DIR to include nav.php -->
+    </nav>
+    
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-5">
-                <div class="card shadow-lg border-0 rounded-lg mt-5">
+                <div class="card shadow-lg border-0 rounded-lg mt-3">
                     <div class="card-header justify-content-center">
                         <h3 class="text-center my-4">ลงทะเบียน</h3>
                     </div>
                     <div class="card-body">
-                        <form onsubmit="registerUser(event)">
+                        <form id="registrationForm" onsubmit="registerUser(event)">
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="f_name" class="form-label">ชื่อ</label>
@@ -47,13 +52,11 @@ if (isset($_SESSION['email'])) {
                             </div>
                             <div class="mb-3">
                                 <label for="user_password" class="form-label">รหัสผ่าน</label>
-                                <input type="password" class="form-control" id="user_password" name="user_password"
-                                    required>
+                                <input type="password" class="form-control" id="user_password" name="user_password" required>
                             </div>
                             <div class="mb-3">
                                 <label for="conf_user_password" class="form-label">ยืนยันรหัสผ่าน</label>
-                                <input type="password" class="form-control" id="conf_user_password"
-                                    name="conf_user_password" required>
+                                <input type="password" class="form-control" id="conf_user_password" name="conf_user_password" required>
                             </div>
                             <div class="mb-3">
                                 <label for="tel" class="form-label">เบอร์โทร</label>
@@ -70,14 +73,7 @@ if (isset($_SESSION['email'])) {
                     </div>
                     <div class="card-footer text-center">
                         <div class="small">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <a href="index.php">ไปหน้าแรก</a>
-                                </div>
-                                <div class="col-md-6">
-                                    <a href="login.php">เข้าสู่ระบบ</a>
-                                </div>
-                            </div>
+                            <a href="login.php">เข้าสู่ระบบ</a>
                         </div>
                     </div>
                 </div>
@@ -86,53 +82,65 @@ if (isset($_SESSION['email'])) {
     </div>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js" crossorigin="anonymous">
-    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
-    function registerUser(event) {
-        event.preventDefault();
+        function registerUser(event) {
+            event.preventDefault();
 
-        const formData = new FormData(event.target);
-        const data = Object.fromEntries(formData);
+            const password = document.getElementById('user_password').value;
+            const confirmPassword = document.getElementById('conf_user_password').value;
 
-        fetch('http://localhost/ART_TOYS_RANDOMIZE/Controller/customer/register.php', {
+            if (password !== confirmPassword) {
+                Swal.fire({
+                    title: 'เกิดข้อผิดพลาด!',
+                    text: 'รหัสผ่านไม่ตรงกัน!',
+                    icon: 'error',
+                    confirmButtonText: 'ตกลง'
+                });
+                return;
+            }
+
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData);
+
+            fetch('http://localhost/ART_TOYS_RANDOMIZE/Controller/customer/register.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(data)
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.result === 1) {
-                    Swal.fire({
-                        title: 'สำเร็จ!',
-                        text: data.messages,
-                        icon: 'success',
-                        confirmButtonText: 'ตกลง'
-                    }).then(() => {
-                        window.location.href = 'login.php';
-                    });
-                } else {
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result === 1) {
+                        Swal.fire({
+                            title: 'สำเร็จ!',
+                            text: data.messages,
+                            icon: 'success',
+                            confirmButtonText: 'ตกลง'
+                        }).then(() => {
+                            window.location.href = 'login.php';
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'เกิดข้อผิดพลาด!',
+                            text: data.messages,
+                            icon: 'error',
+                            confirmButtonText: 'ตกลง'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('เกิดข้อผิดพลาด:', error);
                     Swal.fire({
                         title: 'เกิดข้อผิดพลาด!',
-                        text: data.messages,
+                        text: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้',
                         icon: 'error',
                         confirmButtonText: 'ตกลง'
                     });
-                }
-            })
-            .catch(error => {
-                console.error('เกิดข้อผิดพลาด:', error);
-                Swal.fire({
-                    title: 'เกิดข้อผิดพลาด!',
-                    text: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้',
-                    icon: 'error',
-                    confirmButtonText: 'ตกลง'
                 });
-            });
-    }
+        }
     </script>
 </body>
 
