@@ -6,6 +6,6 @@ if (isset($_SESSION['email'])) {
     session_destroy();
 }
 
-header("Location: ../index.php?logout=true");
+echo json_encode(array("result" => 1));
 exit;
 ?>

@@ -47,7 +47,16 @@ if (isset($_SESSION['email'])) {
                         </form>
                     </div>
                     <div class="card-footer text-center">
-                        <div class="small"><a href="register.php">สมัครสมาชิก</a></div>
+                        <div class="small">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <a href="index.php">ไปหน้าแรก</a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="register.php">สมัครสมาชิก</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -17,7 +17,8 @@ if (isset($_SESSION['email'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" />
     <script data-search-pseudo-elements defer
         src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.24.1/feather.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.24.1/feather.min.js" crossorigin="anonymous">
+    </script>
 </head>
 
 <body>
@@ -46,11 +47,13 @@ if (isset($_SESSION['email'])) {
                             </div>
                             <div class="mb-3">
                                 <label for="user_password" class="form-label">รหัสผ่าน</label>
-                                <input type="password" class="form-control" id="user_password" name="user_password" required>
+                                <input type="password" class="form-control" id="user_password" name="user_password"
+                                    required>
                             </div>
                             <div class="mb-3">
                                 <label for="conf_user_password" class="form-label">ยืนยันรหัสผ่าน</label>
-                                <input type="password" class="form-control" id="conf_user_password" name="conf_user_password" required>
+                                <input type="password" class="form-control" id="conf_user_password"
+                                    name="conf_user_password" required>
                             </div>
                             <div class="mb-3">
                                 <label for="tel" class="form-label">เบอร์โทร</label>
@@ -66,7 +69,16 @@ if (isset($_SESSION['email'])) {
                         </form>
                     </div>
                     <div class="card-footer text-center">
-                        <div class="small"><a href="login.php">เข้าสู่ระบบ</a></div>
+                        <div class="small">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <a href="index.php">ไปหน้าแรก</a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="login.php">เข้าสู่ระบบ</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -74,16 +86,17 @@ if (isset($_SESSION['email'])) {
     </div>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js" crossorigin="anonymous">
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
-        function registerUser(event) {
-            event.preventDefault(); // ป้องกันการส่งฟอร์มแบบปกติ
+    function registerUser(event) {
+        event.preventDefault();
 
-            const formData = new FormData(event.target);
-            const data = Object.fromEntries(formData);
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData);
 
-            fetch('http://localhost/ART_TOYS_RANDOMIZE/Controller/customer/register.php', {
+        fetch('http://localhost/ART_TOYS_RANDOMIZE/Controller/customer/register.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -119,7 +132,7 @@ if (isset($_SESSION['email'])) {
                     confirmButtonText: 'ตกลง'
                 });
             });
-        }
+    }
     </script>
 </body>
 
