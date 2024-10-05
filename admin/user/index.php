@@ -86,9 +86,7 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
                                 <td>${user.address}</td>
                                 <td>${user.user_role}</td>
                                 <td><button class="btn btn-danger" onclick="deleteUser(${user.user_id})">ลบ</button></td>
-                                <td>
-                                    <a class="btn btn-warning" href="edit.php?user_id=${user.user_id}">แก้ไข</a>
-                                </td>
+                                <td><a class="btn btn-warning" href="edit.php?user_id=${user.user_id}">แก้ไข</a></td>
 
 
                             </tr>
@@ -150,10 +148,6 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
                     });
             }
         });
-    }
-
-    function editUser(userId) {
-        window.location.href = 'edit.php?user_id=' + userId;
     }
 
 </script>
