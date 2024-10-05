@@ -6,12 +6,21 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
 <html lang="th">
 
 <head>
-    <!-- ส่วนของ head -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หน้าแรก - ART TOYS</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.24.1/feather.min.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <?php include BASE_DIR . 'layout/nav.php'; ?> <!-- ใช้ BASE_DIR -->
+        <?php include BASE_DIR . 'layout/nav.php'; ?>
     </nav>
 
     <div class="container-fluid">
@@ -19,7 +28,7 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
             <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
                 <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse"
                     style="height: 100vh; overflow-y: auto;">
-                    <?php include BASE_DIR . 'layout/sidebar.php'; ?> <!-- ใช้ BASE_URL -->
+                    <?php include BASE_DIR . 'layout/sidebar.php'; ?>
                 </nav>
             <?php endif; ?>
 
@@ -27,8 +36,8 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
                 <div class="row">
                     <div
                         class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                        <h5>จัดการข้อมูลผู้ใช้งาน</h5>
-                        <button class="btn btn-primary">เพิ่มผู้ใช้งาน</button>
+                        <h3>จัดการข้อมูลผู้ใช้งาน</h3>
+                        <a class="btn btn-primary" href="add.php">เพิ่มผู้ใช้งาน</a>
                     </div>
                     <div class="border border-rounded border-rounded-lg">
                         <table class="table table-hover">
@@ -52,8 +61,6 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
                     </div>
                 </div>
             </div>
-
-
         </div>
     </div>
 
@@ -79,7 +86,11 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
                                 <td>${user.address}</td>
                                 <td>${user.user_role}</td>
                                 <td><button class="btn btn-danger" onclick="deleteUser(${user.user_id})">ลบ</button></td>
-                                <td><button class="btn btn-warning" onclick="editUser(${user.user_id})">แก้ไข</button></td>
+                                <td>
+                                    <a class="btn btn-warning" href="edit.php?user_id=${user.user_id}">แก้ไข</a>
+                                </td>
+
+
                             </tr>
                         `;
                         tableBody.innerHTML += row;
@@ -94,12 +105,57 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
     window.onload = fetchUsers();
 
     function deleteUser(userId) {
-        console.log('Deleting user with ID:', userId);
-        fetchUsers();
+        Swal.fire({
+            title: 'ยืนยันการลบ',
+            text: 'คุณแน่ใจว่าต้องการลบผู้ใช้งานนี้?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'ใช่, ลบเลย!',
+            cancelButtonText: 'ยกเลิก'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`http://localhost/ART_TOYS_RANDOMIZE/Controller/Admin/user/delete.php?user_id=${userId}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.result === 1) {
+                            Swal.fire({
+                                title: 'สำเร็จ!',
+                                text: data.messages,
+                                icon: 'success',
+                                confirmButtonText: 'ตกลง'
+                            }).then(() => {
+                                location.reload(); // รีเฟรชหน้าหลังจากลบ
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'เกิดข้อผิดพลาด!',
+                                text: data.messages,
+                                icon: 'error',
+                                confirmButtonText: 'ตกลง'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('เกิดข้อผิดพลาด:', error);
+                        Swal.fire({
+                            title: 'เกิดข้อผิดพลาด!',
+                            text: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้',
+                            icon: 'error',
+                            confirmButtonText: 'ตกลง'
+                        });
+                    });
+            }
+        });
     }
 
     function editUser(userId) {
-        console.log('Editing user with ID:', userId);
+        window.location.href = 'edit.php?user_id=' + userId;
     }
+
 </script>
+
 </html>
