@@ -1,14 +1,8 @@
 <?php
     include("../../../CONFIG/Config.php");
-    // session_start();
-    $_SESSION["user_id"] = 9;
 ?>  
 
 <?php
-    if (!isset($_SESSION['user_id'])) {
-        echo json_encode(array("result" => 0, "messages" => "กรุณาเข้าสู่ระบบ"));
-        exit;
-    }
     if ($_SERVER["REQUEST_METHOD"] == "PATCH") { 
         $content = @file_get_contents("php://input");
         $json_data = @json_decode($content, true);

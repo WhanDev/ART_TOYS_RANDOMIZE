@@ -5,7 +5,7 @@
 
 <?php
     if ($_SERVER["REQUEST_METHOD"] == "GET") {   
-        $stmt = $conn->prepare("SELECT * FROM toy_order");
+        $stmt = $conn->prepare("SELECT *,art_user.f_name,art_user.l_name FROM toy_order JOIN art_user ON toy_order.user_id = art_user.user_id");
         $stmt->execute();
         $resultObj = $stmt->get_result();
         if ($resultObj->num_rows == 0) {
