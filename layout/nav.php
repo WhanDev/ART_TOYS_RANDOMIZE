@@ -1,7 +1,8 @@
 <?php
 if (!defined('BASE_DIR')) {
-    define('BASE_DIR', 'http://localhost/ART_TOYS_RANDOMIZE/'); 
+    define('BASE_DIR', 'http://localhost/ART_TOYS_RANDOMIZE/');
 }
+
 ?>
 <div class="container-fluid">
     <a class="navbar-brand" href="index.php">ART TOYS</a>
@@ -11,16 +12,16 @@ if (!defined('BASE_DIR')) {
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNav">
-    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
-        <div class="d-md-none">
-            <?php include BASE_DIR . '/layout/sidebar.php'; ?>
-        </div>
-    <?php endif; ?>
+        <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+            <div class="d-md-none">
+                <?php include BASE_DIR . '/layout/sidebar.php'; ?>
+            </div>
+        <?php endif; ?>
 
         <ul class="navbar-nav me-auto">
             <?php if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] === 'customer'): ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php">สินค้า</a>
+                    <a class="nav-link" href="product.php">สินค้า</a>
                 </li>
             <?php endif; ?>
         </ul>
@@ -36,6 +37,14 @@ if (!defined('BASE_DIR')) {
             <?php } else { ?>
 
                 <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'customer'): ?>
+                    <li>
+                        <a href="cart.php" class="btn btn-outline-secondary position-relative">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">
+                                0 
+                            </span>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="profile.php">ข้อมูลส่วนตัว</a>
                     </li>
@@ -103,4 +112,40 @@ if (!defined('BASE_DIR')) {
             }
         });
     }
+
+    function updateCartCount() {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let totalItems = cart.reduce((total, product) => total + parseInt(product.amount), 0); // นับจำนวนสินค้าทั้งหมด
+
+        document.getElementById('cartCount').textContent = totalItems; // อัปเดตจำนวนที่แสดงใน Badge
+    }
+
+    // เรียกใช้งานฟังก์ชันนี้ทุกครั้งที่โหลดหน้าเว็บ
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCartCount(); // โหลดจำนวนสินค้าในตะกร้าทันทีเมื่อหน้าเว็บโหลดเสร็จ
+
+        // ฟังก์ชันนี้จะถูกเรียกทุกครั้งที่เพิ่มสินค้าลงตะกร้า
+        function addToCart(product) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            let existingProduct = cart.find(item => item.id === product.id);
+            if (existingProduct) {
+                existingProduct.amount = parseInt(existingProduct.amount) + parseInt(product.amount);
+            } else {
+                cart.push(product);
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            // อัปเดตจำนวนสินค้าในไอคอนตะกร้าทันทีหลังเพิ่มสินค้า
+            updateCartCount();
+
+            Swal.fire({
+                title: 'เพิ่มลงตะกร้าสำเร็จ',
+                text: product.name + ' ถูกเพิ่มลงในตะกร้า!',
+                icon: 'success',
+                confirmButtonText: 'ตกลง'
+            });
+        }
+    });
 </script>
