@@ -53,11 +53,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    if ($_FILES["prod_img"]["size"] > 5000000) {
-        echo json_encode(array("result" => 0, "messages" => "ไฟล์มีขนาดใหญ่เกินไป."));
-        exit;
-    }
-
     if (!in_array($imageFileType, ["jpg", "jpeg", "png", "gif"])) {
         echo json_encode(array("result" => 0, "messages" => "อนุญาตเฉพาะไฟล์ JPG, JPEG, PNG & GIF เท่านั้น."));
         exit;
