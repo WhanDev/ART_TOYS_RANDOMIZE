@@ -33,6 +33,7 @@
             echo json_encode(array("result" => 0, "messages" => "รหัสผ่านไม่ถูกต้อง"));
             exit;
         } else {
+            $_SESSION['user_id'] = $result['user_id'];
             $_SESSION['f_name'] = $result['f_name'];
             $_SESSION['l_name'] = $result['l_name'];
             $_SESSION['email'] = $result['email'];

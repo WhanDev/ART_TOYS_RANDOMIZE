@@ -73,10 +73,10 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const userId = urlParams.get('user_id');
+        const prod_id = urlParams.get('prod_id');
 
         function fetchUserData(userId) {
-            fetch(`http://localhost/ART_TOYS_RANDOMIZE/Controller/Admin/user/show.php?user_id=${userId}`)
+            fetch(`http://localhost/ART_TOYS_RANDOMIZE/Controller/Admin/user/show.php?prod_id=${prod_id}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.result === 1) {
