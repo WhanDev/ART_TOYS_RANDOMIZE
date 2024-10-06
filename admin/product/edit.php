@@ -1,9 +1,6 @@
 <?php
 session_start();
-define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่า BASE_DIR
-
-$stmt = $conn->prepare("SELECT *,product_type.type_name FROM product JOIN product_type ON product.type_id = product_type.type_id");
-$stmt->execute();
+define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // Set BASE_DIR
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -14,6 +11,7 @@ $stmt->execute();
     <title>แก้ไขข้อมูลสินค้า - ART TOYS</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -24,47 +22,51 @@ $stmt->execute();
     <div class="container-fluid">
         <div class="row">
             <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
-                <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse"
-                    style="height: 100vh; overflow-y: auto;">
+                <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" style="height: 100vh; overflow-y: auto;">
                     <?php include BASE_DIR . 'layout/sidebar.php'; ?>
                 </nav>
             <?php endif; ?>
 
             <div class="col-md-9 ms-sm-auto col-lg-10">
                 <div class="row">
-                    <div
-                        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                         <h3>แก้ไขข้อมูลสินค้า</h3>
                     </div>
                     <div class="border border-rounded border-rounded-lg">
-                        <form id="userForm" class="p-3">
+                        <form id="productForm" class="p-3" enctype="multipart/form-data">
                             <div class="mb-3">
-                                <label for="f_name" class="form-label">ชื่อ</label>
-                                <input type="text" class="form-control" id="f_name" name="f_name">
+                                <label for="prod_id" class="form-label">รหัสสินค้า</label>
+                                <input type="text" class="form-control" id="prod_id" required readonly>
                             </div>
                             <div class="mb-3">
-                                <label for="l_name" class="form-label">นามสกุล</label>
-                                <input type="text" class="form-control" id="l_name" name="l_name">
+                                <label for="prod_name" class="form-label">ชื่อสินค้า</label>
+                                <input type="text" class="form-control" id="prod_name" required>
                             </div>
                             <div class="mb-3">
-                                <label for="email" class="form-label">อีเมล์</label>
-                                <input type="email" class="form-control" id="email" name="email" readonly>
+                                <label for="prod_size" class="form-label">ขนาดสินค้า</label>
+                                <input type="text" class="form-control" id="prod_size" required>
                             </div>
                             <div class="mb-3">
-                                <label for="tel" class="form-label">เบอร์โทร</label>
-                                <input type="text" class="form-control" id="tel" name="tel">
+                                <label for="prod_amount" class="form-label">จำนวนสินค้า</label>
+                                <input type="number" class="form-control" id="prod_amount" required>
                             </div>
                             <div class="mb-3">
-                                <label for="address" class="form-label">ที่อยู่</label>
-                                <input type="text" class="form-control" id="address" name="address">
+                                <label for="prod_price" class="form-label">ราคาสินค้า</label>
+                                <input type="number" class="form-control" id="prod_price" required>
                             </div>
                             <div class="mb-3">
-                                <label for="user_role" class="form-label">สิทธิ์ผู้ใช้</label>
-                                <input type="text" class="form-control" id="user_role" name="user_role">
+                                <label for="type_id" class="form-label">ประเภทสินค้า</label>
+                                <select class="form-select" id="type_id" required>
+                                    <option value="" disabled selected>เลือกประเภทสินค้า</option>
+                                    <!-- Options will be populated by JavaScript -->
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="prod_img" class="form-label">อัปโหลดรูปภาพ</label>
+                                <input type="file" class="form-control" id="prod_img" accept="image/*">
                             </div>
                             <div class="mb-3 text-end">
-                                <button type="button" class="btn btn-danger"
-                                    onclick="window.history.back();">ย้อนกลับ</button>
+                                <button type="button" class="btn btn-danger" onclick="window.history.back();">ย้อนกลับ</button>
                                 <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
                             </div>
                         </form>
@@ -78,20 +80,42 @@ $stmt->execute();
         const urlParams = new URLSearchParams(window.location.search);
         const prod_id = urlParams.get('prod_id');
 
-        function fetchUserData(userId) {
-            fetch(`http://localhost/ART_TOYS_RANDOMIZE/Controller/Admin/user/show.php?prod_id=${prod_id}`)
+        function fetchSelectedProductType() {
+            fetch('http://localhost/ART_TOYS_RANDOMIZE/Controller/Admin/product_type/index.php')
                 .then(response => response.json())
                 .then(data => {
                     if (data.result === 1) {
-                        const userData = data.data;
-                        document.getElementById('f_name').value = userData.f_name;
-                        document.getElementById('l_name').value = userData.l_name;
-                        document.getElementById('email').value = userData.email;
-                        document.getElementById('tel').value = userData.tel;
-                        document.getElementById('address').value = userData.address;
-                        document.getElementById('user_role').value = userData.user_role;
+                        const typeSelect = document.getElementById('type_id');
+                        data.dataList.forEach(type => {
+                            const option = document.createElement('option');
+                            option.value = type.type_id;
+                            option.textContent = type.type_name;
+                            typeSelect.appendChild(option);
+                        });
                     } else {
-                        alert('ไม่พบข้อมูลผู้ใช้');
+                        alert('ไม่พบข้อมูลประเภทสินค้า');
+                    }
+                })
+                .catch(error => {
+                    console.error('เกิดข้อผิดพลาด:', error);
+                    alert('เกิดข้อผิดพลาดในการโหลดข้อมูลประเภทสินค้า');
+                });
+        }
+
+        function fetchProductData(prod_id) {
+            fetch(`http://localhost/ART_TOYS_RANDOMIZE/Controller/Admin/product/detail.php?prod_id=${prod_id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result === 1) {
+                        const productData = data.dataList;
+                        document.getElementById('prod_id').value = productData.prod_id;
+                        document.getElementById('prod_name').value = productData.prod_name;
+                        document.getElementById('prod_size').value = productData.prod_size;
+                        document.getElementById('prod_amount').value = productData.prod_amount;
+                        document.getElementById('prod_price').value = productData.prod_price;
+                        document.getElementById('type_id').value = productData.type_id; // Set selected type directly
+                    } else {
+                        alert('ไม่พบข้อมูลสินค้า');
                     }
                 })
                 .catch(error => {
@@ -100,56 +124,42 @@ $stmt->execute();
                 });
         }
 
-        window.onload = function() {
-            fetchUserData(userId);
+        window.onload = function () {
+            fetchSelectedProductType(); // Fetch types first to populate the select options
+            fetchProductData(prod_id); // Then fetch product data
         };
 
-        document.getElementById('userForm').addEventListener('submit', function (e) {
+        document.getElementById('productForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
-            // ตรวจสอบค่าของแต่ละช่อง input
-            const f_name = document.getElementById('f_name').value.trim();
-            const l_name = document.getElementById('l_name').value.trim();
-            const tel = document.getElementById('tel').value.trim();
-            const address = document.getElementById('address').value.trim();
-            const user_role = document.getElementById('user_role').value.trim();
+            const formData = new FormData();
+            formData.append('prod_id', document.getElementById('prod_id').value);
+            formData.append('prod_name', document.getElementById('prod_name').value);
+            formData.append('prod_size', document.getElementById('prod_size').value);
+            formData.append('prod_amount', document.getElementById('prod_amount').value);
+            formData.append('prod_price', document.getElementById('prod_price').value);
+            formData.append('type_id', document.getElementById('type_id').value);
 
-            if (!f_name || !l_name || !tel || !address || !user_role) {
-                Swal.fire({
-                    title: 'เกิดข้อผิดพลาด!',
-                    text: 'กรุณากรอกข้อมูลในช่องที่จำเป็นให้ครบถ้วน',
-                    icon: 'warning',
-                    confirmButtonText: 'ตกลง'
-                });
-                return;
+            // Check if an image file is selected and append to formData
+            const prod_img = document.getElementById('prod_img').files[0];
+            if (prod_img) {
+                formData.append('prod_img', prod_img);
             }
 
-            const formData = {
-                f_name,
-                l_name,
-                email: document.getElementById('email').value,
-                tel,
-                address,
-                user_role
-            };
-
-            fetch(`http://localhost/ART_TOYS_RANDOMIZE/Controller/Admin/user/edit.php?user_id=${userId}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
+            fetch(`http://localhost/ART_TOYS_RANDOMIZE/Controller/Admin/product/edit.php?prod_id=${prod_id}`, {
+                method: 'POST',
+                body: formData
             })
             .then(response => response.json())
             .then(data => {
                 if (data.result === 1) {
                     Swal.fire({
                         title: 'สำเร็จ!',
-                        text: 'ข้อมูลผู้ใช้ได้รับการอัพเดทเรียบร้อยแล้ว',
+                        text: 'ข้อมูลสินค้าได้รับการอัปเดตเรียบร้อยแล้ว',
                         icon: 'success',
                         confirmButtonText: 'ตกลง'
                     }).then(() => {
-                        window.location.href = 'index.php';
+                        window.location.href = 'index.php'; // Redirect to index.php
                     });
                 } else {
                     Swal.fire({
@@ -171,6 +181,7 @@ $stmt->execute();
             });
         });
     </script>
+
 </body>
 
 </html>

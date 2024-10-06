@@ -83,10 +83,10 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
                                 <td>${product.prod_size}</td>
                                 <td>${product.prod_amount}</td>
                                 <td>${product.prod_price}</td>
-                                <td><img src="http://localhost/ART_TOYS_RANDOMIZE/Controller/admin/product/uploads/${product.prod_img}" alt="${product.prod_name}" style="width: 50px; height: auto;"></td>
+                                <td><img src="http://localhost/ART_TOYS_RANDOMIZE/Controller/admin/product/uploads/${product.prod_img}" alt="${product.prod_name}" style="width: 150px; height: auto;"></td>
                                 <td>${product.type_name}</td>
                                 <td><button class="btn btn-danger" onclick="deleteProduct(${product.prod_id})">ลบ</button></td>
-                                <td><a class="btn btn-warning" href="edit.php?product_id=${product.prod_id}">แก้ไข</a></td>
+                                <td><a class="btn btn-warning" href="edit.php?prod_id=${product.prod_id}">แก้ไข</a></td>
                             </tr>
                         `;
                         tableBody.innerHTML += row;
