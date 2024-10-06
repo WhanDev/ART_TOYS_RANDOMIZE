@@ -8,9 +8,10 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>แก้ไขข้อมูลผู้ใช้งาน - ART TOYS</title>
+    <title>แก้ไขข้อมูลประเภทสินค้า - ART TOYS</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 </head>
 
 <body>
@@ -31,33 +32,17 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
                 <div class="row">
                     <div
                         class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                        <h3>แก้ไขข้อมูลผู้ใช้งาน</h3>
+                        <h3>แก้ไขข้อมูลประเภทสินค้า</h3>
                     </div>
                     <div class="border border-rounded border-rounded-lg">
-                        <form id="userForm" class="p-3">
+                        <form id="ProductTypeForm" class="p-3">
                             <div class="mb-3">
-                                <label for="f_name" class="form-label">ชื่อ</label>
-                                <input type="text" class="form-control" id="f_name" name="f_name">
+                                <label for="type_id" class="form-label">รหัสประเภทสินค้า</label>
+                                <input type="text" class="form-control" id="type_id" name="type_id" readonly>
                             </div>
                             <div class="mb-3">
-                                <label for="l_name" class="form-label">นามสกุล</label>
-                                <input type="text" class="form-control" id="l_name" name="l_name">
-                            </div>
-                            <div class="mb-3">
-                                <label for="email" class="form-label">อีเมล์</label>
-                                <input type="email" class="form-control" id="email" name="email" readonly>
-                            </div>
-                            <div class="mb-3">
-                                <label for="tel" class="form-label">เบอร์โทร</label>
-                                <input type="text" class="form-control" id="tel" name="tel">
-                            </div>
-                            <div class="mb-3">
-                                <label for="address" class="form-label">ที่อยู่</label>
-                                <input type="text" class="form-control" id="address" name="address">
-                            </div>
-                            <div class="mb-3">
-                                <label for="user_role" class="form-label">สิทธิ์ผู้ใช้</label>
-                                <input type="text" class="form-control" id="user_role" name="user_role" readonly>
+                                <label for="type_name" class="form-label">ชื่อประเภทสินค้า</label>
+                                <input type="text" class="form-control" id="type_name" name="type_name">
                             </div>
                             <div class="mb-3 text-end">
                                 <button type="button" class="btn btn-danger"
@@ -73,22 +58,18 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const userId = urlParams.get('user_id');
+        const type_id = urlParams.get('type_id');
 
-        function fetchUserData(userId) {
-            fetch(`http://localhost/ART_TOYS_RANDOMIZE/Controller/Admin/user/show.php?user_id=${userId}`)
+        function fetchProductTypeData(type_id) {
+            fetch(`http://localhost/ART_TOYS_RANDOMIZE/Controller/Admin/product_type/show.php?type_id=${type_id}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.result === 1) {
-                        const userData = data.data;
-                        document.getElementById('f_name').value = userData.f_name;
-                        document.getElementById('l_name').value = userData.l_name;
-                        document.getElementById('email').value = userData.email;
-                        document.getElementById('tel').value = userData.tel;
-                        document.getElementById('address').value = userData.address;
-                        document.getElementById('user_role').value = userData.user_role;
+                        const productTypeData = data.data;
+                        document.getElementById('type_id').value = productTypeData.type_id;
+                        document.getElementById('type_name').value = productTypeData.type_name;
                     } else {
-                        alert('ไม่พบข้อมูลผู้ใช้');
+                        alert('ไม่พบข้อมูลประเภทสินค้า');
                     }
                 })
                 .catch(error => {
@@ -98,39 +79,28 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
         }
 
         window.onload = function() {
-            fetchUserData(userId);
+            fetchProductTypeData(type_id);
         };
 
-        document.getElementById('userForm').addEventListener('submit', function (e) {
+        document.getElementById('ProductTypeForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
-            // ตรวจสอบค่าของแต่ละช่อง input
-            const f_name = document.getElementById('f_name').value.trim();
-            const l_name = document.getElementById('l_name').value.trim();
-            const tel = document.getElementById('tel').value.trim();
-            const address = document.getElementById('address').value.trim();
-            const user_role = document.getElementById('user_role').value.trim();
+            // ตรวจสอบค่าของ type_name
+            const type_name = document.getElementById('type_name').value.trim();
 
-            if (!f_name || !l_name || !tel || !address || !user_role) {
+            if (!type_name) {
                 Swal.fire({
                     title: 'เกิดข้อผิดพลาด!',
-                    text: 'กรุณากรอกข้อมูลในช่องที่จำเป็นให้ครบถ้วน',
+                    text: 'กรุณากรอกชื่อประเภทสินค้า',
                     icon: 'warning',
                     confirmButtonText: 'ตกลง'
                 });
                 return;
             }
 
-            const formData = {
-                f_name,
-                l_name,
-                email: document.getElementById('email').value,
-                tel,
-                address,
-                user_role
-            };
+            const formData = { type_name };
 
-            fetch(`http://localhost/ART_TOYS_RANDOMIZE/Controller/Admin/user/edit.php?user_id=${userId}`, {
+            fetch(`http://localhost/ART_TOYS_RANDOMIZE/Controller/Admin/product_type/edit.php?type_id=${type_id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
@@ -142,7 +112,7 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
                 if (data.result === 1) {
                     Swal.fire({
                         title: 'สำเร็จ!',
-                        text: 'ข้อมูลผู้ใช้ได้รับการอัพเดทเรียบร้อยแล้ว',
+                        text: data.messages,
                         icon: 'success',
                         confirmButtonText: 'ตกลง'
                     }).then(() => {

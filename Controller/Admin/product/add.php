@@ -37,7 +37,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     $target_dir = "../../../Controller/admin/product/uploads/";
-    $target_file = basename($_FILES["prod_img"]["name"]);
+    $target_file = $target_dir . basename($_FILES["prod_img"]["name"]);
+    $prod_img = basename($_FILES["prod_img"]["name"]);
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
@@ -66,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql = "INSERT INTO product (prod_name, prod_size, prod_amount, prod_price, prod_img, type_id) 
                 VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssissi", $prod_name, $prod_size, $prod_amount, $prod_price, $target_file, $type_id);
+        $stmt->bind_param("ssissi", $prod_name, $prod_size, $prod_amount, $prod_price, $prod_img, $type_id);
 
         if ($stmt->execute()) {
             echo json_encode(array("result" => 1, "message" => "เพิ่มสินค้าสำเร็จ"));

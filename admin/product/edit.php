@@ -1,6 +1,9 @@
 <?php
 session_start();
 define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่า BASE_DIR
+
+$stmt = $conn->prepare("SELECT *,product_type.type_name FROM product JOIN product_type ON product.type_id = product_type.type_id");
+$stmt->execute();
 ?>
 <!DOCTYPE html>
 <html lang="th">
