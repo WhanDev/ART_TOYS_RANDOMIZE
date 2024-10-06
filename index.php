@@ -1,9 +1,18 @@
 <?php
 session_start();
 
-// Set BASE_DIR to the absolute path of the root directory
-define('BASE_DIR', __DIR__ . '/');
+// ตรวจสอบว่า user_role เป็น 'admin' หรือไม่
+if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+    header("Location: http://localhost/ART_TOYS_RANDOMIZE/admin/index.php");
+    exit(); // หยุดการทำงานหลังจากเปลี่ยนเส้นทาง
+} elseif (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'customer') {
+    header("Location: http://localhost/ART_TOYS_RANDOMIZE/product.php");
+    exit(); // หยุดการทำงานหลังจากเปลี่ยนเส้นทาง
+}
+
+// ถ้าไม่มีการเข้าสู่ระบบให้แสดงเนื้อหานี้
 ?>
+
 <!DOCTYPE html>
 <html lang="th">
 
@@ -20,7 +29,7 @@ define('BASE_DIR', __DIR__ . '/');
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <?php include BASE_DIR . 'layout/nav.php'; ?> <!-- Using BASE_DIR to include files -->
+        <?php include 'layout/nav.php'; ?> <!-- Using BASE_DIR to include files -->
     </nav>
 
     <div class="container-fluid">
@@ -28,20 +37,13 @@ define('BASE_DIR', __DIR__ . '/');
             <!-- Sidebar for admin only -->
             <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
                 <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" style="height: 100vh; overflow-y: auto;">
-                    <?php include BASE_DIR . 'layout/sidebar.php'; ?> <!-- Using BASE_DIR to include files -->
+                    <?php include 'layout/sidebar.php'; ?> <!-- Using BASE_DIR to include files -->
                 </nav>
             <?php endif; ?>
 
             <!-- Main Content Area -->
             <main class="col-md-<?php echo (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') ? '9' : '12'; ?> ms-sm-auto col-lg-<?php echo (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') ? '10' : '12'; ?> px-md-4">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
-                        <?php include BASE_DIR . 'admin/dashboard.php'; ?>
-                    <?php else: ?>
-                        <?php include BASE_DIR . 'shop.php'; ?>
-                    <?php endif; ?>
-                </div>
-                <!-- Dynamic Content goes here -->
+                <?php include 'content.php'; ?>
             </main>
         </div>
     </div>

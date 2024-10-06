@@ -5,7 +5,16 @@ if (!defined('BASE_DIR')) {
 
 ?>
 <div class="container-fluid">
-    <a class="navbar-brand" href="index.php">ART TOYS</a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'customer'): ?>
+            <a class="navbar-brand" href="product.php">ART TOYS</a>
+        <?php elseif (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+            <a class="navbar-brand" href="index.php">ART TOYS</a>
+        <?php else: ?>
+            <a class="navbar-brand" href="index.php">ART TOYS</a>
+        <?php endif; ?>
+    </nav>
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -19,7 +28,7 @@ if (!defined('BASE_DIR')) {
         <?php endif; ?>
 
         <ul class="navbar-nav me-auto">
-            <?php if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] === 'customer'): ?>
+            <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'customer'): ?>
                 <li class="nav-item">
                     <a class="nav-link" href="product.php">สินค้า</a>
                 </li>
@@ -40,8 +49,9 @@ if (!defined('BASE_DIR')) {
                     <li>
                         <a href="cart.php" class="btn btn-outline-secondary position-relative">
                             <i class="fas fa-shopping-cart"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">
-                                0 
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                id="cartCount">
+                                0
                             </span>
                         </a>
                     </li>
@@ -121,7 +131,7 @@ if (!defined('BASE_DIR')) {
     }
 
     // เรียกใช้งานฟังก์ชันนี้ทุกครั้งที่โหลดหน้าเว็บ
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         updateCartCount(); // โหลดจำนวนสินค้าในตะกร้าทันทีเมื่อหน้าเว็บโหลดเสร็จ
 
         // ฟังก์ชันนี้จะถูกเรียกทุกครั้งที่เพิ่มสินค้าลงตะกร้า

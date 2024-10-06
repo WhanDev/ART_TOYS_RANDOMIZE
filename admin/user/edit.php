@@ -1,5 +1,10 @@
+<!-- ต้องSESSION['user_role'] == 'admin'เท่านั้นที่เข้าได้ หากไม่ใช้ให้ไป http://localhost/ART_TOYS_RANDOMIZE/index.php -->
 <?php
 session_start();
+if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
+    header("Location: http://localhost/ART_TOYS_RANDOMIZE/index.php");
+    exit();
+}
 define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่า BASE_DIR
 ?>
 <!DOCTYPE html>
@@ -97,7 +102,7 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
                 });
         }
 
-        window.onload = function() {
+        window.onload = function () {
             fetchUserData(userId);
         };
 
@@ -137,35 +142,35 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
                 },
                 body: JSON.stringify(formData)
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.result === 1) {
-                    Swal.fire({
-                        title: 'สำเร็จ!',
-                        text: 'ข้อมูลผู้ใช้ได้รับการอัพเดทเรียบร้อยแล้ว',
-                        icon: 'success',
-                        confirmButtonText: 'ตกลง'
-                    }).then(() => {
-                        window.location.href = 'index.php';
-                    });
-                } else {
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result === 1) {
+                        Swal.fire({
+                            title: 'สำเร็จ!',
+                            text: 'ข้อมูลผู้ใช้ได้รับการอัพเดทเรียบร้อยแล้ว',
+                            icon: 'success',
+                            confirmButtonText: 'ตกลง'
+                        }).then(() => {
+                            window.location.href = 'index.php';
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'เกิดข้อผิดพลาด!',
+                            text: data.messages,
+                            icon: 'error',
+                            confirmButtonText: 'ตกลง'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('เกิดข้อผิดพลาด:', error);
                     Swal.fire({
                         title: 'เกิดข้อผิดพลาด!',
-                        text: data.messages,
+                        text: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้',
                         icon: 'error',
                         confirmButtonText: 'ตกลง'
                     });
-                }
-            })
-            .catch(error => {
-                console.error('เกิดข้อผิดพลาด:', error);
-                Swal.fire({
-                    title: 'เกิดข้อผิดพลาด!',
-                    text: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้',
-                    icon: 'error',
-                    confirmButtonText: 'ตกลง'
                 });
-            });
         });
     </script>
 </body>

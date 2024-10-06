@@ -1,5 +1,9 @@
 <?php
 session_start();
+if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
+    header("Location: http://localhost/ART_TOYS_RANDOMIZE/index.php");
+    exit();
+}
 define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // Set BASE_DIR
 ?>
 <!DOCTYPE html>

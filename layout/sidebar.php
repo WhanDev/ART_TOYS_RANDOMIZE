@@ -1,10 +1,15 @@
 <?php
 if (!defined('BASE_URL')) {
-    define('BASE_URL', 'http://localhost/ART_TOYS_RANDOMIZE/'); 
+    define('BASE_URL', 'http://localhost/ART_TOYS_RANDOMIZE/');
 }
 ?>
 <div class="position-sticky">
     <ul class="nav navbar-nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link" href="<?php echo BASE_URL . 'admin/index.php'; ?>">
+                แดชบอร์ด
+            </a>
+        </li>
         <li class="nav-item">
             <a class="nav-link" href="<?php echo BASE_URL . 'admin/user/index.php'; ?>">
                 จัดการข้อมูลผู้ใช้ระบบ
