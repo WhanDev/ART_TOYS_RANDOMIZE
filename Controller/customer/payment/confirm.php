@@ -66,8 +66,8 @@
             exit;
         } else {
             if (move_uploaded_file($_FILES["pamt_img"]["tmp_name"], $target_file)) {
-                $stmt = $conn->prepare("INSERT INTO payment(pamt_amount, pamt_discount, pamt_net, pamt_img, or_id) VALUES (?, ?, ?, ?, ?)");
-                $stmt->bind_param("ddisi", $pamt_amount, $pamt_discount, $pamt_net, $target_file, $or_id);
+                $stmt = $conn->prepare("INSERT INTO payment(pamt_amount, pamt_net, pamt_img, or_id) VALUES (?,  ?, ?, ?)");
+                $stmt->bind_param("disi", $pamt_amount, $pamt_net, $target_file, $or_id);
                 if ($stmt->execute()) {
                     $stmt_details = $conn->prepare("SELECT prod_id, ordt_amount FROM toy_order_details WHERE or_id = ?");
                     $stmt_details->bind_param("i", $or_id);

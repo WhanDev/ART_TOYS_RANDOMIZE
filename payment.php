@@ -18,8 +18,6 @@ define('BASE_DIR', __DIR__ . '/');
     <title>ตะกร้าสินค้า - ART TOYS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.24.1/feather.min.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -116,12 +114,13 @@ define('BASE_DIR', __DIR__ . '/');
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ cart: orderData })
+                    body: JSON.stringify({
+                        cart: orderData
+                    })
                 });
 
                 const result = await response.json();
                 if (result.result === 1) {
-                    // ถ้าการเรียก API ตัวแรกสำเร็จ
                     const or_id = result.or_id; // แก้ไขให้ได้ or_id จาก API
 
                     // ลบ LocalStorage
@@ -133,12 +132,16 @@ define('BASE_DIR', __DIR__ . '/');
                     formData.append('or_id', or_id);
 
                     // เรียกใช้งาน API ตัวที่สอง
+
                     const paymentResponse = await fetch(`http://localhost/ART_TOYS_RANDOMIZE/Controller/customer/payment/confirm.php?or_id=${or_id}`, {
                         method: 'POST',
                         body: formData
                     });
 
-                    const paymentResult = await paymentResponse.json();
+                    const paymentText = await paymentResponse.text(); // Get response as text
+                    console.log(paymentText); // Log the response for debugging
+
+                    const paymentResult = JSON.parse(paymentText);
                     if (paymentResult.result === 1) {
                         Swal.fire('ชำระเงินสำเร็จ', paymentResult.message, 'success');
                         window.location.href = 'index.php'; // ไปยังหน้าขอบคุณ
