@@ -1,6 +1,6 @@
 <?php
     include("../../../CONFIG/Config.php");
-    $_SESSION["user_id"] = 9;
+    session_start();
 ?>
 
 <?php

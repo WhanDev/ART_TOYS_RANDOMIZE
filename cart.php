@@ -88,39 +88,8 @@ define('BASE_DIR', __DIR__ . '/');
 
         document.getElementById('checkoutBtn').addEventListener('click', function() {
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            const cartData = cart.map(item => ({
-                prod_id: item.id, // ใช้ prod_id หรือ id ขึ้นอยู่กับที่คุณใช้
-                ordt_amount: item.amount // ตรวจสอบให้แน่ใจว่าชื่อคีย์ถูกต้อง
-            }));
             if (cart.length > 0) {
-                fetch('http://localhost/ART_TOYS_RANDOMIZE/Controller/customer/order/add.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            cart: cartData
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Response Data:', data);
-
-                        if (data.result === 1) {
-                            Swal.fire({
-                                title: 'สั่งซื้อสำเร็จ!',
-                                text: 'คำสั่งซื้อของคุณถูกบันทึกแล้ว',
-                                icon: 'success',
-                                confirmButtonText: 'ตกลง'
-                            }).then(() => {
-                                localStorage.removeItem('cart');
-                                window.location.href = 'index.php';
-                            });
-                        } else {
-                            Swal.fire('เกิดข้อผิดพลาด', data.message, 'error');
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
+                window.location.href = 'http://localhost/ART_TOYS_RANDOMIZE/payment.php';
             } else {
                 Swal.fire('ตะกร้าว่างเปล่า', 'กรุณาเลือกสินค้า', 'warning');
             }

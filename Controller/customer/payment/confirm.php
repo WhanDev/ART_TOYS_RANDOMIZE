@@ -1,12 +1,6 @@
 <?php
     include("../../../CONFIG/Config.php");
-    // session_start();
-    $_SESSION["user_id"] = 12;
-
-    if (!isset($_SESSION['user_id'])) {
-        echo json_encode(array("result" => 0, "messages" => "กรุณาเข้าสู่ระบบ"));
-        exit;
-    }
+    session_start();
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $content = @file_get_contents("php://input");
@@ -18,17 +12,15 @@
         }
         $or_id = $_GET["or_id"];
         $pamt_amount = isset($_POST["pamt_amount"]) ? trim($_POST["pamt_amount"]) : "" ;
-        $pamt_discount = isset($_POST["pamt_discount"]) ? trim($_POST["pamt_discount"]) : "" ;
         $pamt_net = isset($_POST["pamt_net"]) ? trim($_POST["pamt_net"]) : "" ;
         $or_status = "ชำระเงินเสร็จสิ้น";
 
-        if ($pamt_amount === null || $pamt_discount === null || $pamt_net === null || !isset($_FILES["pamt_img"])) {
+        if ($pamt_amount === null ||  $pamt_net === null || !isset($_FILES["pamt_img"])) {
             echo json_encode(array(
                 "result" => 0, 
                 "messages" => "ข้อมูลไม่ครบถ้วน", 
                 "data" => array(
                     "pamt_amount" => $pamt_amount,
-                    "pamt_discount" => $pamt_discount,
                     "pamt_net" => $pamt_net,
                     "pamt_img" => isset($_FILES["pamt_img"]) ? $_FILES["pamt_img"] : null
                 )

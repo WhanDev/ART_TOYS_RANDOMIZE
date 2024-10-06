@@ -1,14 +1,10 @@
 <?php
     include("../../../CONFIG/Config.php");
-    // session_start();
-    $_SESSION["user_id"] = 12;
+    session_start();
 ?>
 
 <?php
-    if (!isset($_SESSION['user_id'])) {
-        echo json_encode(array("result" => 0, "messages" => "กรุณาเข้าสู่ระบบ"));
-        exit;
-    }
+    
     if ($_SERVER["REQUEST_METHOD"] == "GET") { 
         $content = @file_get_contents("php://input");
         $json_data = @json_decode($content, true);
@@ -27,7 +23,7 @@
 
 <?php
     $stmt = $conn->prepare(
-        "SELECT toy_order.or_id, toy_order.or_date, toy_order.or_status, toy_order_details.prod_id, toy_order_details.ordt_amount, product.prod_name, product.prod_price 
+        "SELECT toy_order.or_id, toy_order.or_date, toy_order.or_status, toy_order_details.prod_id, toy_order_details.ordt_amount, product.prod_name, product.prod_price , product.prod_img
         FROM toy_order 
         JOIN toy_order_details ON toy_order.or_id = toy_order_details.or_id
         JOIN product ON toy_order_details.prod_id = product.prod_id 
