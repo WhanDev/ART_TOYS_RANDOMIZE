@@ -28,7 +28,7 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
             <?php endif; ?>
             <div class="col-md-<?php echo isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin' ? '9' : '12'; ?> ms-sm-auto col-lg-<?php echo isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin' ? '10' : '12'; ?>">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">รายงานยอดขายตามเดือน</h1>
+                    <h1 class="h2">รายงานยอดขายตามเดือน</h1>
                 </div>
 
                 <form id="reportForm" class="mb-3" method="GET">
@@ -40,7 +40,9 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
                         <label for="year">ปี:</label>
                         <input type="number" class="form-control" name="year" value="<?php echo date('Y'); ?>" min="2020">
                     </div>
-                    <button type="submit" class="btn btn-primary">ดูรายงาน</button>
+                    <div class="mt-2">
+                        <button type="submit" class="btn btn-primary">ดูรายงาน</button>
+                    </div>
                 </form>
 
                 <div id="reportResult" class="mt-4">
@@ -55,48 +57,65 @@ define('BASE_DIR', realpath(__DIR__ . '/../../') . '/'); // ตั้งค่�
 </html>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#reportForm').submit(function (event) {
-                event.preventDefault();
-                let month = $('input[name="month"]').val();
-                let year = $('input[name="year"]').val();
+<script>
+    $(document).ready(function() {
+        $('#reportForm').submit(function(event) {
+            event.preventDefault();
+            let month = $('input[name="month"]').val();
+            let year = $('input[name="year"]').val();
 
-                $.ajax({
-                    url: 'http://localhost/ART_TOYS_RANDOMIZE/Controller/Admin/report/report.php',
-                    method: 'GET',
-                    data: { month: month, year: year },
-                    success: function (response) {
-                        console.log(response); // ดูข้อมูลที่ตอบกลับ
-                        if (response.result === 1) {
-                            let table = `
+            $.ajax({
+                url: 'http://localhost/ART_TOYS_RANDOMIZE/Controller/Admin/report/report.php',
+                method: 'GET',
+                data: {
+                    month: month,
+                    year: year
+                },
+                success: function(response) {
+                    console.log(response); // ดูข้อมูลที่ตอบกลับ
+
+                    if (response.result === 1) {
+                        let table = `
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
                                             <th>ชื่อสินค้า</th>
                                             <th>จำนวนที่ขายได้</th>
                                             <th>ยอดขายรวม (บาท)</th>
+                                            <th>วันที่</th>
                                         </tr>
                                     </thead>
                                     <tbody>`;
-                            response.data.forEach(function (item) {
-                                table += `
+                        let totalRevenue = 0;
+                        response.data.forEach(function(item) {
+                            let revenue = parseFloat(item.total_revenue);
+                            totalRevenue += revenue;
+                            table += `
                                     <tr>
                                         <td>${item.prod_name}</td>
                                         <td>${item.total_sold}</td>
                                         <td>${parseFloat(item.total_revenue).toFixed(2)}</td>
+                                        <td>${item.or_date}</td>
                                     </tr>`;
-                            });
-                            table += `</tbody></table>`;
-                            $('#reportResult').html(table);
-                        } else {
-                            $('#reportResult').html('<p>' + response.messages + '</p>');
-                        }
-                    },
-                    error: function () {
-                        $('#reportResult').html('<p>เกิดข้อผิดพลาดในการดึงข้อมูล</p>');
+                        });
+                        table += `
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="2"><strong>ยอดขายรวมทั้งหมด</strong></td>
+                                        <td colspan="2"><strong>${totalRevenue.toFixed(2)} บาท</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>`;
+                        $('#reportResult').html(table);
+                    } else {
+                        $('#reportResult').html('<p>' + response.messages + '</p>');
                     }
-                });
+                },
+                error: function() {
+                    $('#reportResult').html('<p>เกิดข้อผิดพลาดในการดึงข้อมูล</p>');
+                }
             });
         });
-    </script>
+    });
+</script>

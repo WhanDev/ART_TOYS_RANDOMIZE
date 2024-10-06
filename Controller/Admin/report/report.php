@@ -17,7 +17,8 @@ if (isset($_GET['month']) && isset($_GET['year'])) {
         SELECT 
             product.prod_name, 
             SUM(toy_order_details.ordt_amount) AS total_sold, 
-            SUM(toy_order_details.ordt_amount * product.prod_price) AS total_revenue
+            SUM(toy_order_details.ordt_amount * product.prod_price) AS total_revenue,
+            toy_order.or_date
         FROM toy_order 
         JOIN toy_order_details ON toy_order.or_id = toy_order_details.or_id
         JOIN product ON toy_order_details.prod_id = product.prod_id

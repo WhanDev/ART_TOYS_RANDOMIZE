@@ -143,8 +143,10 @@ define('BASE_DIR', __DIR__ . '/');
 
                     const paymentResult = JSON.parse(paymentText);
                     if (paymentResult.result === 1) {
-                        Swal.fire('ชำระเงินสำเร็จ', paymentResult.message, 'success');
-                        window.location.href = 'index.php'; // ไปยังหน้าขอบคุณ
+                        Swal.fire('ชำระเงินสำเร็จ', paymentResult.message, 'success').then(() => {
+                            // รอจนกว่าผู้ใช้งานจะกด OK
+                            window.location.href = 'index.php'; // ไปยังหน้าขอบคุณ
+                        });
                     } else {
                         Swal.fire('เกิดข้อผิดพลาด', paymentResult.messages, 'error');
                     }
