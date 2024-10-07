@@ -37,11 +37,9 @@ define('BASE_DIR', __DIR__ . '/');
                 </tr>
             </thead>
             <tbody id="cartItems">
-                <!-- สินค้าในตะกร้าจะแสดงที่นี่ -->
             </tbody>
         </table>
 
-        <!-- ฟอร์มสำหรับการชำระเงิน -->
         <form id="paymentForm" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="pamt_amount" class="form-label">ยอดรวมที่ต้องชำระ (บาท)</label>
@@ -50,6 +48,10 @@ define('BASE_DIR', __DIR__ . '/');
             <div class="mb-3">
                 <label for="pamt_net" class="form-label">ยอดสุทธิ (บาท)</label>
                 <input type="number" class="form-control" id="pamt_net" name="pamt_net" readonly />
+            </div>
+            <div class="mb-3">
+                <label for="pamt_img" class="form-label">บัญชี</label>
+                <p>กรุงศรี 000-123-4821</p>
             </div>
             <div class="mb-3">
                 <label for="pamt_img" class="form-label">แนบหลักฐานการชำระเงิน</label>
@@ -89,15 +91,12 @@ define('BASE_DIR', __DIR__ . '/');
                 cartItems.innerHTML += itemHTML; // แสดงรายการสินค้า
             });
 
-            // แสดงยอดรวมทั้งหมด
             totalPriceElement.innerText = new Intl.NumberFormat().format(totalPrice); // แสดงยอดรวม
 
-            // ตั้งค่าข้อมูลในฟอร์ม
             document.getElementById('pamt_amount').value = totalPrice;
             document.getElementById('pamt_net').value = totalPrice; // โดยปกติจะเท่ากับยอดรวมทั้งหมด
         }
 
-        // การจัดการการยืนยันการสั่งซื้อ
         document.getElementById('paymentForm').addEventListener('submit', async function(event) {
             event.preventDefault(); // ป้องกันการส่งฟอร์มปกติ
 
@@ -107,7 +106,6 @@ define('BASE_DIR', __DIR__ . '/');
                 ordt_amount: item.amount
             }));
 
-            // ส่งข้อมูลการสั่งซื้อไปยัง API ตัวแรก
             try {
                 const response = await fetch('http://localhost/ART_TOYS_RANDOMIZE/Controller/customer/order/add.php', {
                     method: 'POST',
